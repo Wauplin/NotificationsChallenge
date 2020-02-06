@@ -39,6 +39,7 @@ def solution():
         st.write('Compute offline using the CLI interface :')
         st.write(f"```\npython cli.py --input-file='{url_path}' --output-file='output.csv' --review\n```")
 
+        st.title('Process')
         with st.spinner(f'Load data from {url_path}'):
             t0 = time.time()
             streamer = NotificationStreamer(url_path)
