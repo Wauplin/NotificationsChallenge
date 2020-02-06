@@ -1,20 +1,3 @@
-"""
-python cli.py --input-file='datasets/notifications.csv' --output-file='output.csv' --review
-
-usage: cli.py [-h] [-i INPUT_FILE] [-o OUTPUT_FILE] [--stdout] [--review]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -i INPUT_FILE, --input-file INPUT_FILE
-                        Path to raw notifications filepath.
-  -o OUTPUT_FILE, --output-file OUTPUT_FILE
-                        Path to output filepath. File will be overwritten if
-                        exists.
-  --stdout              Print to stdout if True.
-  --review              Print review to stdout if True.
-
-"""
-
 import time
 from pprint import pprint
 

@@ -1,5 +1,6 @@
 *.pdf
 *.csv
+.env
 
 datasets/
 deprecated/
