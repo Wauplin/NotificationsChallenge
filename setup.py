@@ -1,7 +1,9 @@
 import os
 import random
 import pandas as pd
-from constants import DATASETS_DIRPATH
+
+from src.delay_predictor import DelayPredictor
+from constants import DATASETS_DIRPATH, STATISTICS_DIRPATH
 
 
 def select_august(df):
@@ -35,3 +37,7 @@ if len(list(DATASETS_DIRPATH.glob('*.csv'))) == 0:
     to_csv(select_september(train_dataset), DATASETS_DIRPATH / 'september_train_dataset.csv')
     to_csv(select_august(test_dataset), DATASETS_DIRPATH / 'august_test_dataset.csv')
     to_csv(select_september(test_dataset), DATASETS_DIRPATH / 'september_test_dataset.csv')
+
+if len(list(STATISTICS_DIRPATH.glob('*.csv'))) < 2:
+    DelayPredictor(DATASETS_DIRPATH / 'august_train_dataset.csv')
+    DelayPredictor(DATASETS_DIRPATH / 'notifications.csv')
