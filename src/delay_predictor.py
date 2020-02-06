@@ -114,6 +114,8 @@ class DelayPredictor(object):
         notifications['period_of_day'] = notifications['timestamp'].apply(
             timestamp_to_period_of_day)
 
+        # Note: Here I take the 80% percentile to be more conservative than the average delay.
+        # TODO : study the impact of the hyperparameter
         self.statistics = notifications.groupby([
             'day_of_week',
             'period_of_day',
@@ -121,6 +123,11 @@ class DelayPredictor(object):
         ]).agg(delay=pd.NamedAgg('delay', lambda x: x.quantile(0.80)))
 
     def get_user_criticity(average_nb_of_notifications_per_day):
+        """
+        Not used in the DelayPredictor for now.
+        Idea is to classify notifications also based on the user (often notified or not).
+        # TODO : improve DelayPredictor with this category.
+        """
         if average_nb_of_notifications_per_day == 0:  # First time we see the user
             return 'normal'
         elif average_nb_of_notifications_per_day in range(1, 3):

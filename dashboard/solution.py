@@ -13,7 +13,20 @@ from constants import DATASETS_DIRPATH
 
 
 def solution():
-    st.title(f'Solution')
+    st.title(f'Solution tool')
+
+    st.write('''
+    Page to upload and process an unseen dataset.
+
+
+    Processing is done by the **StatisticalWaiterBundler** trained on all the initial dataset from challenge (`notifications.csv`).
+
+
+    Results can be exported but are limited to first 5k rows due to technical issues. Processing is still done on all notifications.
+
+
+    A performance review is also available at the bottom.
+    ''')
 
     st.info('Delay predictor is trained on notifications.csv (full dataset).')
 
@@ -21,6 +34,10 @@ def solution():
     url_path = st.text_input('Dataset URL')
 
     if url_path is not None and url_path != '':
+
+        st.title('CLI')
+        st.write('Compute offline using the CLI interface :')
+        st.write(f"```\npython cli.py --input-file='{url_path}' --output-file='output.csv' --review\n```")
 
         with st.spinner(f'Load data from {url_path}'):
             t0 = time.time()
@@ -35,6 +52,13 @@ def solution():
             t1 = time.time()
             st.success(f'Bundler finished in {round(t1-t0, 2)}s')
 
+        with st.spinner('Processing reviewer...'):
+            t0 = time.time()
+            reviewer = Reviewer()
+            review = reviewer.review(streamer.notifications, bundled_notifications)
+            t1 = time.time()
+            st.success(f'Reviewer finished in {round(t1-t0, 2)}s')
+
         st.title('Exports')
         initial_notifications = Exporter(streamer.notifications).format()
         write_df('Initial notifications', initial_notifications)
@@ -43,3 +67,6 @@ def solution():
         bundled_notifications = Exporter(bundled_notifications).format()
         write_df('Bundled notifications', bundled_notifications)
         file_download(bundled_notifications, 'bundled_notifications')
+
+        st.title('Performances')
+        reviewer.display_review()

@@ -1,7 +1,7 @@
 """
-python cli.py --input-file='datasets/notifications.csv' --output-file='output.csv'
+python cli.py --input-file='datasets/notifications.csv' --output-file='output.csv' --review
 
-usage: cli.py [-h] [-i INPUT_FILE] [-o OUTPUT_FILE] [--stdout]
+usage: cli.py [-h] [-i INPUT_FILE] [-o OUTPUT_FILE] [--stdout] [--review]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -11,12 +11,15 @@ optional arguments:
                         Path to output filepath. File will be overwritten if
                         exists.
   --stdout              Print to stdout if True.
-  
+  --review              Print review to stdout if True.
+
 """
 
 import time
+from pprint import pprint
 
 from src.exporter import Exporter
+from src.reviewer import Reviewer
 from src.streamer import NotificationStreamer
 from src.bundlers.statistical_waiter_bundler import StatisticalWaiterNotificationBundler
 
@@ -36,9 +39,13 @@ parser.add_argument('-o',
                     default='output.csv',
                     help='Path to output filepath. File will be overwritten if exists.')
 parser.add_argument('--stdout',
-                    default=True,
+                    default=False,
                     action='store_true',
                     help='Print to stdout if True.')
+parser.add_argument('--review',
+                    default=False,
+                    action='store_true',
+                    help='Print review to stdout if True.')
 args = parser.parse_args()
 
 t0 = time.time()
@@ -58,6 +65,10 @@ Exporter(bundled_notifications).save_to(args.output_file)
 
 if args.stdout:
     print(Exporter(bundled_notifications).format())
+
+if args.review:
+    print('Process reviewer.')
+    pprint(Reviewer().review(streamer.notifications, bundled_notifications))
 
 t1 = time.time()
 print(f'Done. Took {round(t1-t0, 1)}s.')
