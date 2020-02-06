@@ -9,14 +9,14 @@ from src.utils import second_in_day, timestamp_to_day, timestamp_to_day_of_week
 class StatisticalWaiterNotificationBundler(WaiterNotificationBundler):
     """docstring for StatisticalWaiterNotificationBundler."""
 
-    def __init__(self):
+    def __init__(self, train_filepath=None):
         self.parent_class = super(StatisticalWaiterNotificationBundler, self)
         self.parent_class.__init__()
 
         self.current_day = None
         self.nb_notifications_current_day = None
 
-        self.delay_predictor = DelayPredictor()
+        self.delay_predictor = DelayPredictor(train_filepath)
 
         self.user_current_day = {}
         self.user_nb_notifications_current_day = {}

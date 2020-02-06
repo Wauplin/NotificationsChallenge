@@ -55,6 +55,9 @@ def interactive_tests():
             step=0.25,
         )
         bundler_kwargs = {'default_waiting_time_in_hour': default_waiting_time_in_hour}
+    elif bundler_class is StatisticalWaiterNotificationBundler:
+        st.info('Delay predictor is trained on august_train_dataset.csv .')
+        bundler_kwargs = {}
     else:
         bundler_kwargs = {}
 

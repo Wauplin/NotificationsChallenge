@@ -16,7 +16,9 @@ from constants import STATISTICS_DIRPATH, AUGUST_TRAIN_FILEPATH
 class DelayPredictor(object):
     """docstring for DelayPredictor."""
 
-    def __init__(self, csvpath=AUGUST_TRAIN_FILEPATH):
+    def __init__(self, csvpath=None):
+        if csvpath is None:
+            csvpath = AUGUST_TRAIN_FILEPATH
         self.csvpath = Path(csvpath)
         self.statistics = None
         if not self._statistics_filepath().exists():
