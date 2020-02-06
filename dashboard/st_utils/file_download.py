@@ -22,8 +22,8 @@ import streamlit as st
 
 
 def file_download(df, name='&lt;some_name&gt;'):
-    csv = df.to_csv(index=False)
+    csv = df.head(1000).to_csv(index=False)
     # some strings <-> bytes conversions necessary here
     b64 = base64.b64encode(csv.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as {name}.csv)'
+    href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as {name}.csv). Contains only first 1k lines.'
     st.markdown(href, unsafe_allow_html=True)
