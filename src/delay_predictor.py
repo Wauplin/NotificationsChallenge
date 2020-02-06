@@ -1,5 +1,7 @@
+import os
 import time
 import math
+import requests
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -43,7 +45,23 @@ class DelayPredictor(object):
         return self.statistics.mean().delay
 
     def _statistics_filepath(self):
-        return STATISTICS_DIRPATH / self.csvpath.name
+        path = STATISTICS_DIRPATH / self.csvpath.name
+        url = self.__statistics_url()
+        if not path.exists() and url is not None:
+            print(f'Donwload statistics from {url}')
+            r = requests.get(url)
+            with open(path, 'wb') as f:
+                f.write(r.content)
+        return path
+
+    def __statistics_url(self):
+        """
+        To avoid computing statistics on cloud
+        """
+        if self.csvpath.name == 'august_train_dataset.csv':
+            return os.environ.get('CHALLENGE_TRAIN_AUGUST_STATISTICS')
+        elif self.csvpath.name == 'notifications.csv':
+            return os.environ.get('CHALLENGE_NOTIFICATIONS_STATISTICS')
 
     def _load_statistics(self):
         df = pd.read_csv(self._statistics_filepath())
