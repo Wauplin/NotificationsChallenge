@@ -7,7 +7,6 @@ from src.utils import second_in_day, timestamp_to_day, timestamp_to_day_of_week
 
 
 class StatisticalWaiterNotificationBundler(WaiterNotificationBundler):
-    """docstring for StatisticalWaiterNotificationBundler."""
 
     def __init__(self, train_filepath=None):
         self.parent_class = super(StatisticalWaiterNotificationBundler, self)

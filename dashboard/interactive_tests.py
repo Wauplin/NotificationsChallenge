@@ -10,28 +10,27 @@ from src.bundlers.waiter_bundler import WaiterNotificationBundler
 from src.bundlers.statistical_waiter_bundler import StatisticalWaiterNotificationBundler
 from src.bundlers.cheater_bundler import CheaterNotificationBundler
 
-from constants import DATASETS_DIRPATH
 from dashboard.st_utils.write_df import write_df
 from dashboard.st_utils.file_download import file_download
+from constants import DATASETS_DIRPATH, STATISTICS_DIRPATH
 
 
 DATASETS_PATHS = list(DATASETS_DIRPATH.glob('*.csv'))
 
 
 def interactive_tests():
+    st.title('Parameters of the test')
 
-    st.sidebar.markdown('**Choose local csv...**')
-    path = st.sidebar.selectbox('Dataset file', DATASETS_PATHS)
+    st.markdown('**Choose local csv...**')
+    path = st.selectbox('Dataset file', DATASETS_PATHS)
 
-    st.sidebar.markdown('**...or upload from url**')
-    url_path = st.sidebar.text_input('Dataset URL')
+    st.markdown('**...or upload from url**')
+    url_path = st.text_input('Dataset URL')
     if url_path is not None and url_path != '':
         st.warning('Tests from URL are not efficient since the file is downloaded multiple times.')
         path = url_path
 
-    st.sidebar.markdown('**Parameters of the test**')
-
-    limit = st.sidebar.number_input(
+    limit = st.number_input(
         'Number of notifications to load (-1 to load all dataset)',
         min_value=-1,
         max_value=None,
@@ -39,7 +38,7 @@ def interactive_tests():
         step=10000,
     )
 
-    bundler_class = st.sidebar.selectbox('Bundler', options=[
+    bundler_class = st.selectbox('Algorithm', options=[
         WaiterNotificationBundler,
         NaiveNotificationBundler,
         CheaterNotificationBundler,
@@ -47,7 +46,7 @@ def interactive_tests():
     ], format_func=lambda x: x.__name__)
 
     if bundler_class is WaiterNotificationBundler:
-        default_waiting_time_in_hour = st.sidebar.number_input(
+        default_waiting_time_in_hour = st.number_input(
             'Default waiting time (in hour)',
             min_value=0.,
             max_value=24.,
@@ -56,8 +55,13 @@ def interactive_tests():
         )
         bundler_kwargs = {'default_waiting_time_in_hour': default_waiting_time_in_hour}
     elif bundler_class is StatisticalWaiterNotificationBundler:
-        st.info('Delay predictor is trained on august_train_dataset.csv .')
-        bundler_kwargs = {}
+        train_filepath = STATISTICS_DIRPATH / st.selectbox(
+            'Dataset used to train DelayPredictor', options=[
+                'august_train_dataset.csv',
+                'notifications.csv'
+            ],
+        )
+        bundler_kwargs = {'train_filepath': train_filepath}
     else:
         bundler_kwargs = {}
 
@@ -66,9 +70,11 @@ def interactive_tests():
     reviewer = Reviewer()
 
     st.title(f'{bundler.__class__.__name__}')
-    st.write(bundler.__doc__)
 
-    st.title('Processing')
+    st.write(f' - Data from `{path}`')
+    st.write(f' - {len(streamer.notifications)} notifications')
+
+    st.title(f'Processing')
 
     with st.spinner('Processing bundler...'):
         t0 = time.time()

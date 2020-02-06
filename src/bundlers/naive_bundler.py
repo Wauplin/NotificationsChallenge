@@ -5,7 +5,6 @@ from src.bundlers.base_bundler import BaseNotificationBundler
 
 
 class NaiveNotificationBundler(BaseNotificationBundler):
-    """docstring for NaiveNotificationBundler."""
 
     def bundle(self, stream):
         for notification in stream:

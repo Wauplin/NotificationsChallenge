@@ -48,7 +48,7 @@ class DelayPredictor(object):
         path = STATISTICS_DIRPATH / self.csvpath.name
         url = self.__statistics_url()
         if not path.exists() and url is not None:
-            print(f'Donwload statistics from {url}')
+            print(f'Download statistics from {url}')
             r = requests.get(url)
             with open(path, 'wb') as f:
                 f.write(r.content)

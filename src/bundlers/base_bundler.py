@@ -2,7 +2,6 @@ import pandas as pd
 
 
 class BaseNotificationBundler(object):
-    """docstring for BaseNotificationBundler."""
 
     BUNDLED_NOTIFICATION_KEYS = set([
         'notification_sent',

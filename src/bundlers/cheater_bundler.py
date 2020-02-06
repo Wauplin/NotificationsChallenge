@@ -10,7 +10,6 @@ from src.bundlers.base_bundler import BaseNotificationBundler
 
 
 class CheaterNotificationBundler(BaseNotificationBundler):
-    """docstring for CheaterNotificationBundler."""
 
     def __init__(self):
         self.notifications = None

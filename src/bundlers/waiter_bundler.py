@@ -4,9 +4,6 @@ from src.bundlers.base_bundler import BaseNotificationBundler
 
 
 class WaiterNotificationBundler(BaseNotificationBundler):
-    """
-    docstring for WaiterNotificationBundler.
-    """
 
     def __init__(self, default_waiting_time_in_hour=1):
         self.default_waiting_time = pd.Timedelta(hours=default_waiting_time_in_hour)
