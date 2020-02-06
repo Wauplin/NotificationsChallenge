@@ -12,15 +12,27 @@ from src.bundlers.cheater_bundler import CheaterNotificationBundler
 
 from constants import DATASETS_DIRPATH
 from dashboard.st_utils.write_df import write_df
+from dashboard.st_utils.file_download import file_download
+
 
 DATASETS_PATHS = list(DATASETS_DIRPATH.glob('*.csv'))
 
 
 def interactive_tests():
+
+    st.sidebar.markdown('**Choose local csv...**')
     path = st.sidebar.selectbox('Dataset file', DATASETS_PATHS)
 
+    st.sidebar.markdown('**...or upload from url**')
+    url_path = st.sidebar.text_input('Dataset URL')
+    if url_path is not None and url_path != '':
+        st.warning('Tests from URL are not efficient since the file is downloaded multiple times.')
+        path = url_path
+
+    st.sidebar.markdown('**Parameters of the test**')
+
     limit = st.sidebar.number_input(
-        'Number of notifications to load',
+        'Number of notifications to load (-1 to load all dataset)',
         min_value=-1,
         max_value=None,
         value=10000,
@@ -50,7 +62,7 @@ def interactive_tests():
     bundler = bundler_class(**bundler_kwargs)
     reviewer = Reviewer()
 
-    st.title(f'Bundler : {bundler.__class__.__name__}')
+    st.title(f'{bundler.__class__.__name__}')
     st.write(bundler.__doc__)
 
     st.title('Processing')
@@ -70,5 +82,10 @@ def interactive_tests():
     reviewer.display_review()
 
     st.title('Exports')
-    write_df('Initial notifications', Exporter(streamer.notifications).format())
-    write_df('Bundled notifications', Exporter(bundled_notifications).format())
+    initial_notifications = Exporter(streamer.notifications).format()
+    write_df('Initial notifications', initial_notifications)
+    file_download(initial_notifications, 'initial_notifications')
+
+    bundled_notifications = Exporter(bundled_notifications).format()
+    write_df('Bundled notifications', bundled_notifications)
+    file_download(bundled_notifications, 'bundled_notifications')

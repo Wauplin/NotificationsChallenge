@@ -67,6 +67,7 @@ class Reviewer(object):
         results['nb_notifications_sent_too_soon'] = (
             notifications['delay'].apply(lambda x: x.total_seconds()) < 0.0).sum()
         results['average_delay'] = notifications['delay'].mean()
+        results['25_percentile_delay'] = notifications['delay'].quantile(0.25)
         results['50_percentile_delay'] = notifications['delay'].quantile(0.50)
         results['75_percentile_delay'] = notifications['delay'].quantile(0.75)
         results['90_percentile_delay'] = notifications['delay'].quantile(0.90)
@@ -158,6 +159,11 @@ class Reviewer(object):
                     'format_str': format_timedelta,
                     'significant': True,
                 },
+                '25_percentile_delay': {
+                    'text': 'Delay percentile (25%)',
+                    'must_be': 'lower is better',
+                    'format_str': format_timedelta,
+                },
                 '50_percentile_delay': {
                     'text': 'Delay percentile (50%)',
                     'must_be': 'lower is better',
@@ -213,6 +219,7 @@ class Reviewer(object):
 
             list_to_display = [
                 'average_delay',
+                '25_percentile_delay',
                 '50_percentile_delay',
                 '75_percentile_delay',
                 '90_percentile_delay',
