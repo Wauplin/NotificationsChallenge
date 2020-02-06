@@ -19,7 +19,7 @@ with LoginPage() as session:
         pages['Data exploration'] = data_exploration
         pages['Components presentation'] = components_presentation
         pages['Interactive tests'] = interactive_tests
-        pages['Solution'] = solution
+        pages['Solution tool'] = solution
         pages['Conclusion'] = conclusion
 
         page = pages[st.sidebar.selectbox('Page', list(pages.keys()))]
