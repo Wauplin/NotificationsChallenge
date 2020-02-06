@@ -46,6 +46,7 @@ class LoginPage():
         return self.session
 
     def valid_credentials(self):
-        return True
+        if os.environ.get('CHALLENGE_NO_LOGIN_REQUIRED'):
+            return True
         return (self.session.user_name.lower() == os.environ.get('CHALLENGE_LOGIN').lower()
                 and self.session.password.lower() == os.environ.get('CHALLENGE_LOGIN').lower())
