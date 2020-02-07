@@ -18,11 +18,31 @@ First bundler that I built. The only behavior is to keep all notifications as th
 **Benefits :** almost no implementation needed. Delay is minimal.  
 **Drawbacks :** users are over-spammed.   
 
+#### Metrics
+
+| naive bundler | decrease percentage | user spammed above 4 notifications per day (rate) | Average delay | Median delay | Bundler processing time |
+| --- | --- | --- | --- | --- | --- |
+| train_august | 0% | 10.1% | 0h 0m 0s | 0h 0m 0s | 1.39s |
+| test_august | 0% | 10.97% | 0h 0m 0s | 0h 0m 0s | 1.12s |
+| train_september | 0% | 10.15% | 0h 0m 0s | 0h 0m 0s | 1.09s |
+| test_september | 0% | 10.65% | 0h 0m 0s | 0h 0m 0s | 0.8s |
+| all_dataset | 0% | 11.0% | 0h 0m 0s | 0h 0m 0s | 4.46s |
+
 ## Cheater Bundler
 
 This bundler cheats and breaks the implicit rule that the algorithm cannot see the future notifications. Internally, it looks at all the notifications received by each user each day. Then it does a k-means clustering on the 1-D vector of notification timestamps (k=4). This way, it is impossible that the system sends more than 4 notifications per user per day. The goal is to know what is the best case scenario.  
 **Benefits :** no users spammed and delay can't be improved.  
 **Drawbacks :** cheats.
+
+#### Metrics
+
+| cheater bundler | decrease percentage | user spammed above 4 notifications per day (rate) | Average delay | Median delay | Bundler processing time |
+| --- | --- | --- | --- | --- | --- |
+| train_august | 39.06% | 0% | 0h 33m 15s | 0h 0m 0s | 103.84s |
+| test_august | 43.76% | 0% | 0h 41m 45s | 0h 0m 0s | 81.7s |
+| train_september | 43.55% | 0% | 0h 34m 7s | 0h 0m 0s | 71.97s |
+| test_september | 47.27% | 0% | 0h 40m 9s | 0h 0m 0s | 113.3s |
+| all_dataset | 42.92% | 0% | 0h 36m 50s | 0h 0m 0s | 424.15s |
 
 ## Waiter Bundler
 
@@ -31,11 +51,41 @@ The Waiter Bundler is bundler that has a simple algorithm. First time a notifica
 **Drawbacks :** there is some place for improvements.  
 In the current implementation, there is no guaranty that the notification will be sent on the same day.  
 
+#### Metrics
+
+| waiter bundler (1h) | decrease percentage | user spammed above 4 notifications per day (rate) | Average delay | Median delay | Bundler processing time |
+| --- | --- | --- | --- | --- | --- |
+| train_august | 35.96% | 6.15% | 0h 49m 23s | 1h 0m 0s | 1.62s |
+| test_august | 39.78% | 6.98% | 0h 48m 11s | 1h 0m 0s | 1.11s |
+| train_september | 39.86% | 6.54% | 0h 48m 21s | 1h 0m 0s | 1.31s |
+| test_september | 42.99% | 7.14% | 0h 47m 23s | 1h 0m 0s | 0.87s |
+| all_dataset | 39.23% | 6.04% | 0h 48m 27s | 1h 0m 0s | 5.23s |
+
 ## Statistical Waiter Bundler
 
 The Statistical Waiter Bundler is an advance version of the previous one. The idea is to apply a different delay to each notification based on several features. This bundler instantiate a DelayPredictor (see below) that decides by how much time the notification must be delayed.  
 **Benefits :** does not process all notifications the same which allows better performances (if DelayPredictor is good). Quite simple to implement and extend with new features.  
 **Drawbacks :** again, there is place for improvements. For instance, the WaiterBundler do not take into account the number of notifications received during the 1-hour timer. Sometimes, it could be interesting to use this feature to modulate the initial delay.  
+
+#### Metrics (august training)
+
+| statistical waiter bundler (august training) | decrease percentage | user spammed above 4 notifications per day (rate) | Average delay | Median delay | Bundler processing time |
+| --- | --- | --- | --- | --- | --- |
+| train_august | 35.9% | 7.4% | 0h 48m 45s | 0h 25m 40s | 22.98s |
+| test_august | 39.6% | 7.91% | 0h 51m 35s | 0h 26m 33s | 14.15s |
+| train_september | 39.91% | 7.32% | 0h 51m 7s | 0h 27m 50s | 22.93s |
+| test_september | 43.19% | 8.08% | 0h 53m 21s | 0h 33m 31s | 12.55s |
+| all_dataset | 39.28% | 7.54% | 0h 51m 15s | 0h 26m 43s | 70.87s |
+
+#### Metrics (all notifications training)
+
+| statistical waiter bundler (all dataset - /!\ biased) | decrease percentage | user spammed above 4 notifications per day (rate) | Average delay | Median delay | Bundler processing time |
+| --- | --- | --- | --- | --- | --- |
+| train_august | 36.48% | 7.08% | 0h 53m 2s | 0h 33m 16s | 23.11s |
+| test_august | 40.61% | 7.59% | 0h 55m 53s | 0h 34m 29s | 14.1s |
+| train_september | 41.65% | 7.17% | 0h 51m 5s | 0h 31m 58s | 14.79s |
+| test_september | 44.94% | 7.94% | 0h 53m 30s | 0h 34m 16s | 12.29s |
+| all_dataset | 40.46% | 7.14% | 0h 53m 51s | 0h 34m 29s | 63.96s |
 
 # Delay Predictor :
 
