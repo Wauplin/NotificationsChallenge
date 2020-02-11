@@ -64,6 +64,11 @@ class Reviewer(object):
         results['users_spammed_above_8_per_day_rate'] = 100.0 * \
             results['nb_users_spammed_above_8_per_day'] / results['nb_users']
 
+        results['nb_notifications_above_4_per_day_rate'] = 100.0 * \
+            results['nb_notifications_above_4_per_day'] / results['nb_bundled_notifications']
+        results['nb_notifications_above_8_per_day_rate'] = 100.0 * \
+            results['nb_notifications_above_8_per_day'] / results['nb_bundled_notifications']
+
         results['nb_notifications_sent_too_soon'] = (
             notifications['delay'].apply(lambda x: x.total_seconds()) < 0.0).sum()
         results['average_delay'] = notifications['delay'].mean()
@@ -153,6 +158,17 @@ class Reviewer(object):
                     'must_be': 'lower is better',
                     'format_str': lambda x: f'{round(x, 2)}%',
                 },
+                'nb_notifications_above_4_per_day_rate': {
+                    'text': 'Number of notifications above 4 bundled notifications per day (rate)',
+                    'must_be': 'lower is better',
+                    'format_str': lambda x: f'{round(x, 2)}%',
+                    'significant': True,
+                },
+                'nb_notifications_above_8_per_day_rate': {
+                    'text': 'Number of notifications above 8 bundled notifications per day (rate)',
+                    'must_be': 'lower is better',
+                    'format_str': lambda x: f'{round(x, 2)}%',
+                },
                 'average_delay': {
                     'text': 'Average delay',
                     'must_be': 'lower is better',
@@ -211,6 +227,8 @@ class Reviewer(object):
                 'nb_users_spammed_above_8_per_day',
                 'users_spammed_above_4_per_day_rate',
                 'users_spammed_above_8_per_day_rate',
+                'nb_notifications_above_4_per_day_rate',
+                'nb_notifications_above_8_per_day_rate',
             ]
 
             st.write('### Key numbers :')

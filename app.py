@@ -9,6 +9,7 @@ from dashboard.data_exploration import data_exploration
 from dashboard.components_presentation import components_presentation
 from dashboard.interactive_tests import interactive_tests
 from dashboard.solution import solution
+from dashboard.performances import performances
 from dashboard.conclusion import conclusion
 
 with LoginPage() as session:
@@ -20,6 +21,7 @@ with LoginPage() as session:
         pages['Components presentation'] = components_presentation
         pages['Interactive tests'] = interactive_tests
         pages['Solution tool'] = solution
+        pages['Performances'] = performances
         pages['Conclusion'] = conclusion
 
         page = pages[st.sidebar.selectbox('Page', list(pages.keys()))]
